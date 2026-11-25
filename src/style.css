@@ -1,0 +1,358 @@
+@import './base.css';
+.entities {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.toolbar-spacer {
+  flex: 1;
+}
+.scene-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.state-chip,
+.muted {
+  color: var(--muted);
+  font-size: 11px;
+}
+.state-chip.current {
+  color: #9ed5b1;
+}
+.work-area {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  gap: 14px;
+}
+.viewport-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid #34414e;
+  background: #19222a;
+}
+.viewport-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 32px;
+  padding: 6px 8px;
+  border-bottom: 1px solid #34414e;
+  background: #202a33;
+}
+#scene-stats {
+  font-size: 11px;
+  text-align: right;
+}
+#viewport-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #0d1116;
+}
+#viewport {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline-offset: -2px;
+}
+#empty-view {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  text-align: center;
+  padding: 15px;
+  pointer-events: none;
+}
+#empty-view strong {
+  font-size: 17px;
+  font-weight: 400;
+  color: #cfdae8;
+}
+.viewport-help {
+  padding: 7px 9px;
+  color: var(--muted);
+  font-size: 11px;
+  border-top: 1px solid #34414e;
+}
+.viewport-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  max-width: 85%;
+  padding: 6px 9px;
+  background: #19222ae6;
+  border: 1px solid var(--border);
+  font-size: 11px;
+  pointer-events: none;
+}
+#controls {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 350px;
+  min-height: 0;
+  gap: 12px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+#controls fieldset {
+  flex-shrink: 0;
+}
+#vision-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 9px 0;
+}
+.field > input,
+.field > select {
+  width: 100%;
+}
+.field small {
+  color: var(--muted);
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+.check {
+  margin: 6px 10px 6px 0;
+}
+.button-row {
+  margin-top: 8px;
+}
+.button-row button {
+  flex: 1;
+  padding-inline: 7px;
+}
+input[type='range'] {
+  width: 100%;
+  accent-color: var(--blue);
+}
+.message {
+  min-height: 16px;
+  margin-top: 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.message:not(.success):not(.error) {
+  color: var(--muted);
+}
+.notice {
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  color: #d8c697;
+  background: #343128;
+  border: 1px solid #6a6044;
+}
+details {
+  flex-shrink: 0;
+  border-top: 1px solid #34414e;
+  color: var(--muted);
+  font-size: 11px;
+}
+summary {
+  padding: 8px 10px;
+  cursor: pointer;
+}
+pre {
+  max-height: 180px;
+  overflow: auto;
+  margin: 0;
+  padding: 10px;
+  border-top: 1px solid #34414e;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font:
+    11px/1.5 Consolas,
+    monospace;
+}
+#startup-message {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1150px) {
+  #controls {
+    flex-basis: 300px;
+  }
+  .toolbar-spacer {
+    display: none;
+  }
+}
+
+.rgb-row {
+  display: flex;
+  gap: 8px;
+}
+.rgb-row label {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+}
+.rgb-row input {
+  min-width: 0;
+  width: 100%;
+}
+#viewport-surface {
+  position: relative;
+  flex-shrink: 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.framing-label {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 5px 8px;
+  background: #19222ae6;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  pointer-events: none;
+}
+#camera-dialog {
+  width: min(580px, 94vw);
+}
+.resolution-row {
+  display: flex;
+  gap: 12px;
+}
+.resolution-row > .field {
+  flex: 1;
+  min-width: 0;
+}
+#camera-error:empty {
+  display: none;
+}
+
+#controls > .presentation-controls {
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  color: inherit;
+}
+.presentation-controls > summary {
+  font-size: 12px;
+  background: #202a33;
+}
+.presentation-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px;
+}
+.presentation-body fieldset {
+  min-width: 0;
+}
+
+/* Keep the entire settings panel inside seven equal expandable sections. */
+#controls > .environment-section {
+  width: 100%;
+  min-width: 0;
+}
+.environment-section > summary {
+  display: list-item;
+  padding: 10px;
+  user-select: none;
+}
+.section-mode {
+  float: right;
+  margin-left: 8px;
+  font-size: 10px;
+  font-weight: 400;
+}
+.live-mode {
+  color: #9ed5b1;
+}
+.bake-mode {
+  color: #d8c697;
+}
+#environment-world-fields {
+  min-width: 0;
+}
+#environment-world-fields > .field:first-child {
+  margin-top: 0;
+}
+.viewport-info-overlay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 4;
+  width: min(310px, calc(100% - 20px));
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 10px 12px;
+  color: var(--muted);
+  background: #19222aee;
+  border: 1px solid var(--border);
+  font-size: 11px;
+  line-height: 1.5;
+  pointer-events: none;
+}
+.viewport-info-overlay strong,
+.viewport-info-overlay b {
+  color: #cfdae8;
+  font-weight: 600;
+}
+/* Viewport-only mode stays inside the native app window. The toolbar retains
+   its exit button, while Escape is also wired by the frontend. */
+body.viewport-expanded #workspace {
+  padding: 0;
+}
+body.viewport-expanded .tab-bar,
+body.viewport-expanded #footer,
+body.viewport-expanded #controls,
+body.viewport-expanded .viewport-header,
+body.viewport-expanded .viewport-help,
+body.viewport-expanded #details,
+body.viewport-expanded #message,
+body.viewport-expanded #browser-notice {
+  display: none !important;
+}
+body.viewport-expanded .panel {
+  padding: 6px;
+  border: 0;
+}
+body.viewport-expanded .toolbar {
+  margin-bottom: 6px;
+  justify-content: flex-end;
+}
+body.viewport-expanded .toolbar > :not(#viewport-expand):not(#viewport-info) {
+  display: none !important;
+}
+body.viewport-expanded .work-area {
+  gap: 0;
+}
+body.viewport-expanded .viewport-panel {
+  border: 0;
+}

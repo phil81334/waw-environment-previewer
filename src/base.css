@@ -1,0 +1,268 @@
+/* Common colours, typography and form controls for the previewer. */
+
+:root {
+  font:
+    12px 'Segoe UI',
+    Arial,
+    sans-serif;
+  color: #cfdae8;
+  background: #191e23;
+  color-scheme: dark;
+  --border: #445565;
+  --muted: #a7b4c4;
+  --blue: #328ad3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: linear-gradient(110deg, #202a33, #182027);
+}
+
+.tab-bar,
+.tabs,
+.button-row,
+.applications,
+.tool-buttons,
+.action-row,
+.mod-toolbar,
+.console-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-bar {
+  height: 33px;
+  flex-shrink: 0;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.tabs {
+  height: 100%;
+  gap: 3px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: linear-gradient(#27323d, #202a34);
+  border: 1px solid #495b6c;
+  border-radius: 2px;
+  min-height: 29px;
+  padding: 4px 12px;
+}
+
+button:hover {
+  border-color: #6b849d;
+  background: #2b3b4c;
+}
+
+button:disabled {
+  cursor: default;
+  color: #75808d;
+  background: #202a34;
+  border-color: #354454;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.tab {
+  height: 100%;
+  padding: 0 20px;
+  border-radius: 3px 3px 0 0;
+  color: #cfdae8;
+  font-size: 12px;
+}
+
+.tab.active,
+.primary {
+  color: #e1e9f3;
+  border-color: var(--blue);
+  background: linear-gradient(#174f85, #12365c);
+  box-shadow: inset 0 0 0 1px #2772ac;
+}
+
+.panel {
+  padding: 14px;
+  border: 1px solid #3b4a59;
+  background: linear-gradient(115deg, #1d2730, #182027);
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 8px 0;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+  accent-color: var(--blue);
+  margin: 0;
+}
+
+input[type='text'],
+input[type='number'],
+input[type='search'],
+select,
+textarea,
+.repo-url {
+  padding: 4px 7px;
+  border: 1px solid var(--border);
+  background: #19222a;
+  min-width: 0;
+}
+
+input[type='text'],
+input[type='number'],
+input[type='search'],
+select,
+.repo-url {
+  min-height: 29px;
+}
+
+textarea {
+  resize: vertical;
+  font:
+    12px/1.5 Consolas,
+    monospace;
+}
+
+fieldset {
+  border: 1px solid var(--border);
+  margin: 0;
+  padding: 12px;
+  min-width: 0;
+}
+
+legend {
+  padding: 0 5px;
+}
+
+.primary {
+  min-width: 115px;
+}
+
+.success {
+  color: #9ed5b1;
+}
+
+.error {
+  color: #f0ac9e;
+}
+
+footer {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 25px;
+  padding: 3px 9px;
+  border-top: 1px solid #3b4652;
+  background: #242a30;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.footer-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0 4px;
+  border-color: transparent;
+  background: transparent;
+}
+
+dialog {
+  width: min(540px, 94vw);
+  max-height: 90vh;
+  padding: 0;
+  border: 1px solid #536a7f;
+  background: #202a33;
+  color: #cfdae8;
+  box-shadow: 0 8px 30px #0006;
+}
+
+dialog::backdrop {
+  background: #080d1280;
+}
+
+.dialog-title {
+  padding: 10px 14px;
+  background: #242e38;
+  border-bottom: 1px solid var(--border);
+}
+
+.dialog-body {
+  padding: 0 14px 14px;
+}
+
+.dialog-body p {
+  line-height: 1.5;
+}
+
+.credit {
+  color: var(--muted);
+}
+
+.repo-url {
+  width: 100%;
+  margin-top: 6px;
+  font-size: 11px;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}

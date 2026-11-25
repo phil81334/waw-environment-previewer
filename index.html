@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>World at War Environment Previewer</title>
+    <link rel="icon" href="/src-tauri/icons/icon.png" />
+  </head>
+  <body>
+    <main id="workspace" hidden>
+      <header class="tab-bar">
+        <div class="tabs" role="tablist" aria-label="Environment tools">
+          <button
+            class="tab active"
+            role="tab"
+            aria-selected="true"
+            aria-controls="entities-panel"
+            id="entities-tab"
+          >
+            Environment
+          </button>
+        </div>
+        <span>
+          World at War Environment Previewer |
+          <span id="app-version"></span>
+        </span>
+      </header>
+      <section id="entities-panel" class="panel entities" role="tabpanel" aria-labelledby="entities-tab">
+        <div id="browser-notice" class="notice" hidden>
+          Browser UI preview. Use the desktop app to read installed assets and build scenes.
+        </div>
+        <div class="toolbar">
+          <span class="scene-label" id="scene-label">Environment scene</span>
+          <button id="bake" class="primary">Bake &amp; capture</button>
+          <button id="cancel" disabled>Cancel</button>
+          <span id="bake-state" class="state-chip">No scene yet</span>
+          <span class="toolbar-spacer"></span>
+          <button id="viewport-info" aria-pressed="false">Viewport info</button>
+          <button id="viewport-expand" aria-pressed="false">Expand viewport</button>
+          <button id="camera-open">Camera &amp; framing…</button>
+          <button id="reset-camera">Reset camera</button>
+        </div>
+        <div class="work-area">
+          <section class="viewport-panel">
+            <div class="viewport-header">
+              <span id="scene-title">Compiled world geometry</span>
+              <span id="scene-stats" class="muted">Baked lighting · reflections · Vision · live fog</span>
+            </div>
+            <div id="viewport-wrap">
+              <div id="viewport-surface">
+                <canvas id="viewport" tabindex="0" aria-label="Native environment scene viewport"></canvas>
+                <div id="empty-view">
+                  <strong id="empty-scene-title">Environment scene</strong>
+                  <span>The desktop app builds its first scene automatically.</span>
+                </div>
+                <div id="viewport-label" class="viewport-label" hidden></div>
+                <div id="framing-label" class="framing-label"></div>
+                <aside
+                  id="viewport-info-overlay"
+                  class="viewport-info-overlay"
+                  hidden
+                  aria-label="Preview information"
+                >
+                  <strong>Environment preview</strong>
+                  <div>
+                    <b>Requires Bake</b>
+                    <br />
+                    Light colour/intensity · worldspawn lighting · sky model
+                  </div>
+                  <div>
+                    <b>Live</b>
+                    <br />
+                    Vision · fog · probe/model/FX visibility
+                  </div>
+                  <div id="viewport-bake-info">No scene baked yet.</div>
+                </aside>
+              </div>
+            </div>
+            <div class="viewport-help">
+              Right-drag to look · WASD to fly · Q/E down/up · Shift faster · Wheel to move
+            </div>
+            <details id="details">
+              <summary>Details &amp; warnings</summary>
+              <pre id="details-text">No scene loaded.</pre>
+            </details>
+          </section>
+          <aside id="controls" aria-label="Environment settings">
+            <details class="presentation-controls environment-section" id="environment-light-panel">
+              <summary>
+                Lights
+                <span class="section-mode bake-mode">Requires Bake</span>
+              </summary>
+              <div class="presentation-body">
+                <label class="field">
+                  Authored light
+                  <select id="environment-light-list" disabled></select>
+                </label>
+                <button id="environment-view-light" disabled>View selected light</button>
+                <p id="environment-light-position" class="hint">Authored lights load at startup.</p>
+                <div class="rgb-row">
+                  <label>
+                    R
+                    <input id="environment-light-red" type="text" inputmode="decimal" disabled />
+                  </label>
+                  <label>
+                    G
+                    <input id="environment-light-green" type="text" inputmode="decimal" disabled />
+                  </label>
+                  <label>
+                    B
+                    <input id="environment-light-blue" type="text" inputmode="decimal" disabled />
+                  </label>
+                </div>
+                <label class="field">
+                  Intensity
+                  <input
+                    id="environment-light-intensity"
+                    type="number"
+                    min="0"
+                    max="4"
+                    step="0.05"
+                    disabled
+                  />
+                  <small>0 switches this light off. Supported range: 0–4.</small>
+                </label>
+                <div class="button-row">
+                  <button id="environment-reset-light" disabled>Reset selected light</button>
+                  <button id="environment-reset-lights" disabled>Reset all lights</button>
+                </div>
+                <p class="hint">
+                  Colour and intensity changes take effect after Bake. Light positions, types and targets
+                  remain authored by the scene.
+                </p>
+              </div>
+            </details>
+            <details class="presentation-controls environment-section" id="environment-world-panel">
+              <summary>
+                Worldspawn
+                <span class="section-mode bake-mode">Requires Bake</span>
+              </summary>
+              <div class="presentation-body">
+                <div id="environment-world-fields"></div>
+                <button id="environment-reset-world" disabled>Reset worldspawn</button>
+                <p id="environment-edit-status" class="hint" role="status">
+                  Lighting settings load at startup.
+                </p>
+                <p class="hint">
+                  Bake updates sunlight, indirect lighting, the selected sky and reflection captures.
+                  Installed source files are unchanged.
+                </p>
+                <details id="native-preview-controls" hidden>
+                  <summary>Sky animation preview · Live</summary>
+                  <div class="presentation-body">
+                    <label class="check">
+                      <input id="preview-animate-sky" type="checkbox" />
+                      Animate sky
+                    </label>
+                    <label class="field">
+                      Preview time · seconds
+                      <input id="preview-time" type="number" min="0" step="0.1" value="0" />
+                      <small>Explicit time only; playback does not start automatically.</small>
+                    </label>
+                    <label class="field">
+                      Sky transition
+                      <input id="preview-transition" type="number" min="0" max="1" step="0.01" value="0" />
+                      <small>From 0 to 1; applies to supported transitioning skies.</small>
+                    </label>
+                    <div class="button-row">
+                      <button id="apply-native-preview">Apply sky preview</button>
+                      <button id="reset-native-preview">Reset sky preview</button>
+                    </div>
+                    <p class="hint">
+                      Playback pauses while building, hidden, minimised or showing a dialog. Pausing keeps the
+                      current time.
+                    </p>
+                  </div>
+                </details>
+              </div>
+            </details>
+            <details class="presentation-controls environment-section" id="probes-section">
+              <summary>
+                Probes
+                <span class="section-mode live-mode">Live</span>
+              </summary>
+              <div class="presentation-body">
+                <label class="check">
+                  <input id="reflections" type="checkbox" checked />
+                  Show reflections
+                </label>
+                <button id="reset-probes">Reset probes</button>
+                <p class="hint">
+                  Shows or hides the last captured reflections immediately. Captures are refreshed by Bake;
+                  the scene’s authored probe positions stay fixed.
+                </p>
+              </div>
+            </details>
+            <details class="presentation-controls environment-section" id="vision-section">
+              <summary>
+                Vision
+                <span class="section-mode live-mode">Live</span>
+              </summary>
+              <div class="presentation-body">
+                <label class="check">
+                  <input id="vision-enabled" type="checkbox" checked />
+                  Show Vision
+                </label>
+                <label class="field">
+                  Installed Vision
+                  <select id="vision-list"></select>
+                </label>
+                <button id="load-vision">Apply Vision</button>
+                <p id="vision-name" class="hint">No Vision loaded.</p>
+                <details id="vision-values-panel">
+                  <summary>Vision values</summary>
+                  <div class="presentation-body">
+                    <div id="vision-fields"></div>
+                    <button id="vision-reset-values">Reset values to installed preset</button>
+                    <p class="hint">
+                      Edits affect this preview only. Installed Vision files remain unchanged; preserved or
+                      inactive fields are labelled.
+                    </p>
+                  </div>
+                </details>
+                <label class="field">
+                  Manual revive fade
+                  <input id="revive-fade" type="range" min="0" max="1" step="0.01" value="0" />
+                  <output id="revive-fade-value">0.00</output>
+                </label>
+                <button id="reset-vision">Reset Vision section</button>
+                <p class="hint">
+                  Vision updates immediately. Revive fade is separate preview state; automatic gameplay timing
+                  is not simulated.
+                </p>
+              </div>
+            </details>
+            <details class="presentation-controls environment-section" id="fog-section">
+              <summary>
+                Fog
+                <span class="section-mode live-mode">Live</span>
+              </summary>
+              <div class="presentation-body">
+                <label class="check">
+                  <input id="fog-enabled" type="checkbox" checked />
+                  Show fog
+                </label>
+                <label class="field">
+                  Preset to apply
+                  <select id="fog-preset"></select>
+                </label>
+                <div class="button-row">
+                  <button id="apply-preset">Apply preset</button>
+                  <button id="reset-fog">Reset fog</button>
+                </div>
+                <label class="field">
+                  Mode
+                  <select id="fog-mode">
+                    <option value="exponential">Exponential · SetExpFog</option>
+                    <option value="volumetric">Volumetric / height · SetVolFog</option>
+                  </select>
+                </label>
+                <label class="field">
+                  Start distance
+                  <input id="start-distance" type="text" inputmode="decimal" spellcheck="false" />
+                  <small>World units; zero or greater.</small>
+                </label>
+                <label class="field">
+                  Halfway distance
+                  <input id="halfway-distance" type="text" inputmode="decimal" spellcheck="false" />
+                  <small>Distance in world units; greater than zero.</small>
+                </label>
+                <div id="height-fields">
+                  <label class="field">
+                    Halfway height
+                    <input id="halfway-height" type="text" inputmode="decimal" spellcheck="false" />
+                    <small>Values below 1 disable height density.</small>
+                  </label>
+                  <label class="field">
+                    Base height
+                    <input id="base-height" type="text" inputmode="decimal" spellcheck="false" />
+                    <small>World-space Z.</small>
+                  </label>
+                </div>
+                <fieldset>
+                  <legend>Fog colour</legend>
+                  <div class="rgb-row">
+                    <label>
+                      R
+                      <input id="fog-red" type="text" inputmode="decimal" spellcheck="false" />
+                    </label>
+                    <label>
+                      G
+                      <input id="fog-green" type="text" inputmode="decimal" spellcheck="false" />
+                    </label>
+                    <label>
+                      B
+                      <input id="fog-blue" type="text" inputmode="decimal" spellcheck="false" />
+                    </label>
+                  </div>
+                </fieldset>
+                <p class="hint">
+                  Fog updates immediately without Bake. RGB components are 0–1; the selected Vision processes
+                  the fog with the rest of the scene.
+                </p>
+              </div>
+            </details>
+            <details class="presentation-controls environment-section" id="entities-section">
+              <summary>
+                Entities
+                <span class="section-mode live-mode">Live</span>
+              </summary>
+              <div class="presentation-body">
+                <p id="object-counts" class="hint">Build a scene to inspect its placed objects.</p>
+                <input id="show-models" type="checkbox" checked hidden aria-label="Show all models" />
+                <label class="check">
+                  <input id="show-static-models" type="checkbox" checked />
+                  Show static models
+                </label>
+                <label class="check">
+                  <input id="show-script-models" type="checkbox" checked />
+                  Show script models
+                </label>
+                <label class="check">
+                  <input id="show-brushes" type="checkbox" checked />
+                  Show brush entities
+                </label>
+                <button id="reset-entities">Reset entities</button>
+                <p class="hint">
+                  Visibility changes immediately. Previously baked shadows and captured reflections still
+                  describe the complete scene.
+                </p>
+              </div>
+            </details>
+            <details class="presentation-controls environment-section" id="fx-section">
+              <summary>
+                FX
+                <span class="section-mode live-mode">Live</span>
+              </summary>
+              <div class="presentation-body">
+                <label class="check">
+                  <input id="fx-enabled" type="checkbox" checked disabled />
+                  Show level FX
+                </label>
+                <div class="button-row">
+                  <button id="fx-play" disabled>Play FX</button>
+                  <button id="fx-pause" disabled>Pause FX</button>
+                </div>
+                <button id="reset-fx">Reset FX</button>
+                <p id="fx-loaded" class="hint">Build a scene to load its authored FX automatically.</p>
+                <p id="fx-playback-status" class="hint">
+                  Level FX play after loading. Playback pauses during builds, hidden/minimised windows and
+                  dialogs.
+                </p>
+                <p id="fx-support" class="hint">
+                  Unsupported placements are listed in Details &amp; warnings. No gameplay scripts are
+                  executed.
+                </p>
+              </div>
+            </details>
+          </aside>
+        </div>
+        <div id="message" class="message" role="status">Ready.</div>
+      </section>
+    </main>
+    <footer id="footer" hidden>
+      <span id="status" role="status">Ready</span>
+      <div class="footer-tools">
+        <span id="environment"></span>
+        <button
+          id="about-open"
+          class="icon-button"
+          aria-label="About World at War Environment Previewer"
+          title="About"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v6" />
+            <circle cx="12" cy="7.5" r="0.9" fill="currentColor" stroke="none" />
+          </svg>
+        </button>
+      </div>
+    </footer>
+    <dialog id="about-dialog" aria-labelledby="about-title">
+      <div class="dialog-title" id="about-title">About World at War Environment Previewer</div>
+      <div class="dialog-body">
+        <p>An unofficial fixed-scene World at War environment previewer.</p>
+        <p>
+          Preview lighting, skies, Vision and fog in the included scene. The Direct3D 9 viewport shows the
+          placed models and authored FX.
+        </p>
+        <p id="scene-credit" hidden></p>
+        <p>
+          Bake to update lighting and sky changes. Vision, fog and visibility controls update immediately.
+          Requires your own installed WaW/Modtools assets. No gameplay or map scripts are executed.
+        </p>
+        <p>
+          Independent of Treyarch, Activision and UGX. Built with JavaScript, Vite, Rust and Tauri.
+          Application source is GPL-3.0-only. Credits are in ATTRIBUTION.md.
+        </p>
+        <p class="credit">
+          Created by
+          <strong>phil81334</strong>. Version <span id="about-version"></span>.
+        </p>
+        <label for="repository">Source repository</label>
+        <input id="repository" class="repo-url" value="https://github.com/phil81334/waw-environment-previewer" readonly />
+        <div class="dialog-actions">
+          <form method="dialog"><button>Close</button></form>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="startup-error" aria-labelledby="startup-title">
+      <div class="dialog-title" id="startup-title">World at War folder required</div>
+      <div class="dialog-body">
+        <p id="startup-message"></p>
+        <div class="dialog-actions"><button id="quit">Close</button></div>
+      </div>
+    </dialog>
+    <dialog id="camera-dialog" aria-labelledby="camera-title">
+      <div class="dialog-title" id="camera-title">Camera &amp; framing</div>
+      <div class="dialog-body">
+        <p>
+          Match your in-game view while resizing this app freely. The fitted frame keeps the game aspect ratio
+          and renders at the chosen resolution.
+        </p>
+        <label class="field">
+          WaW cg_fov
+          <input id="camera-fov" type="text" inputmode="decimal" spellcheck="false" value="65" />
+          <small>Base 4:3 horizontal field of view. Standard unzoomed comparison; FOV scale 1.</small>
+        </label>
+        <label class="field">
+          Framing
+          <select id="camera-framing">
+            <option value="game">Match game resolution / aspect</option>
+            <option value="fill">Fill available viewport</option>
+          </select>
+        </label>
+        <div class="resolution-row">
+          <label class="field">
+            Game width
+            <input id="camera-width" type="text" inputmode="numeric" value="1366" />
+          </label>
+          <label class="field">
+            Game height
+            <input id="camera-height" type="text" inputmode="numeric" value="768" />
+          </label>
+        </div>
+        <p id="camera-summary" class="hint"></p>
+        <p class="hint">
+          Change width and height when you change WaW's video mode. Matching FOV and framing also needs a
+          matching camera position and direction; ADS, sprint and scripted camera changes are not simulated.
+        </p>
+        <p id="camera-error" class="error" role="status"></p>
+        <div class="dialog-actions">
+          <button id="camera-reset">Reset to 65 / 1366×768</button>
+          <button id="camera-apply" class="primary">Apply</button>
+          <form method="dialog"><button>Close</button></form>
+        </div>
+      </div>
+    </dialog>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

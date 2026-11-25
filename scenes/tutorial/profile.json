@@ -1,0 +1,55 @@
+{
+  "id": "tutorial",
+  "title": "Tutorial environment",
+  "credit": "Sniperbolt created the map for Nazi Zombie Tutorial v2.0. Sparks wrote the tutorial scripts.",
+  "defaultSky": "skybox_pel1",
+  "defaultVision": "zombie_factory",
+  "camera": {
+    "eye": [-650, 300, 88],
+    "target": [-862.3, 511.7, 64]
+  },
+  "globalCorrection": "default",
+  "probes": [
+    { "origin": [-640, 512, 72], "correction": "" }
+  ],
+  "fog": {
+    "enabled": true,
+    "mode": "volumetric",
+    "startDistance": 440,
+    "halfwayDistance": 3200,
+    "halfwayHeight": 225,
+    "baseHeight": 64,
+    "color": [0.533, 0.717, 1],
+    "transitionSeconds": 0
+  },
+  "fogPresets": [
+    {
+      "id": "distance",
+      "label": "Distance example · custom",
+      "settings": {
+        "mode": "exponential",
+        "startDistance": 0,
+        "halfwayDistance": 500,
+        "color": [0.4, 0.425, 0.44]
+      }
+    },
+    {
+      "id": "dense",
+      "label": "Dense height example · custom",
+      "settings": {
+        "startDistance": 0,
+        "halfwayDistance": 320,
+        "halfwayHeight": 200,
+        "color": [0.6, 0.65, 0.7]
+      }
+    }
+  ],
+  "fx": [
+    {
+      "id": "initial-mystery-box-marker",
+      "name": "maps/zombie/fx_zombie_factory_marker",
+      "origin": [-862.3, 511.7, 24],
+      "angles": [-90, 0, 0]
+    }
+  ]
+}
