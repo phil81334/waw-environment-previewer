@@ -1,5 +1,6 @@
 //! Private D3D9 child viewport. All HWND/COM state remains on Tauri's UI thread.
 //! Only immutable scene Arcs and plain JSON settings cross thread boundaries.
+mod light_markers;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::{
@@ -310,6 +311,8 @@ fn hidden_objects(view: &Value) -> impl Iterator<Item = &str> {
 
 struct Host {
     window: HWND,
+    light_markers: light_markers::LightMarkers,
+    markers_dirty: bool,
     info_overlay: Option<HWND>,
     parent: HWND,
     game: PathBuf,
@@ -528,6 +531,15 @@ impl Host {
         let now = Instant::now();
         let dt = now.duration_since(self.last_tick).as_secs_f64();
         self.last_tick = now;
+        if self.markers_dirty {
+            self.light_markers.update(
+                self.window,
+                &self.view,
+                &self.bounds,
+                self.scene.is_some(),
+            )?;
+            self.markers_dirty = false;
+        }
         if self.last_error.is_some() {
             return Ok(None);
         }
@@ -543,6 +555,8 @@ impl Host {
         if camera.is_some() {
             let view = self.view.clone();
             self.renderer()?.set_view(view)?;
+            self.light_markers
+                .update(self.window, &self.view, &self.bounds, true)?;
         }
         self.renderer()?.render()?;
         self.last_error = None;
@@ -574,6 +588,8 @@ pub fn set_bounds(parent: isize, game: &Path, bounds: Bounds) -> Result<()> {
             let window = unsafe { create_child(parent)? };
             *slot = Some(Host {
                 window,
+                light_markers: Default::default(),
+                markers_dirty: false,
                 info_overlay: None,
                 parent,
                 game: game.to_owned(),
@@ -595,6 +611,7 @@ pub fn set_bounds(parent: isize, game: &Path, bounds: Bounds) -> Result<()> {
             let (_, _, oldw, oldh) = host.bounds.pixels();
             let (x, y, width, height) = bounds.pixels();
             host.bounds = bounds.clone();
+            host.markers_dirty = true;
             if bounds.visible && width >= 2 && height >= 2 {
                 unsafe {
                     SetWindowPos(
@@ -642,6 +659,7 @@ pub fn load_scene(scene: Arc<BakedScene>) -> Result<Value> {
             return Err("Finish or cancel the pending native scene first.".into());
         }
         host.renderer()?.load_scene(&scene)?;
+        host.markers_dirty = true;
         host.renderer()?.clear_fx()?;
         host.previous = Some(Backup {
             scene: host.scene.replace(scene),
@@ -714,6 +732,7 @@ pub fn abort_scene() -> Result<()> {
         host.fx_source_report = backup.fx_source_report;
         host.cubes = backup.cubes;
         host.view = backup.view;
+        host.markers_dirty = true;
         host.renderer.take();
         host.last_error = None;
         if host.scene.is_some() {
@@ -741,6 +760,11 @@ pub fn set_view(view: Value) -> Result<()> {
         let mut slot = slot.borrow_mut();
         let host = slot.as_mut().ok_or("The native viewport is not ready.")?;
         for (key, value) in view.as_object().unwrap() {
+            if matches!(key.as_str(), "camera" | "viewProjection" | "lightMarkers")
+                && host.view[key] != *value
+            {
+                host.markers_dirty = true;
+            }
             host.view[key] = value.clone();
         }
         if view.get("infoOverlay").is_some() {

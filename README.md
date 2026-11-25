@@ -16,7 +16,7 @@ The desktop app needs the [WebView2 Evergreen Runtime](https://developer.microso
 
 | Control | When the change appears |
 | --- | --- |
-| **Lights** | Select an authored light and use **View selected light** to frame it. Set colour and intensity, then **Bake & capture**. An intensity of zero switches it off. |
+| **Lights** | Toggle **Show light icons in viewport** to see numbered bulbs at the authored light positions. Select the matching light and use **View selected light** to frame it. Set colour and intensity, then **Bake & capture**. An intensity of zero switches the light off. |
 | **Worldspawn** | Choose an installed skybox model or edit the sun, ambient light and contrast, then bake. The skybox list is populated from the installation each time the app opens. The last completed scene stays visible while a replacement builds. |
 | **Probes** | Toggle captured reflections immediately. A new bake recaptures them. |
 | **Vision** and **Fog** | Change installed Vision presets, edit their preview values or adjust fog live. Find the corresponding script call under **Details & warnings → Fog request**. |

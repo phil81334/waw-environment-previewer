@@ -18,15 +18,20 @@ const worldFields = [
 ];
 const clone = (value) => structuredClone(value);
 
-export function createEnvironmentControls({ onChange = () => {}, onFocus = () => {} } = {}) {
+export function createEnvironmentControls({ onChange = () => {}, onFocus = () => {}, onMarkers = () => {} } = {}) {
   const byId = (id) => document.getElementById(id);
   const worldInputs = new Map();
+  const markerToggle = byId('environment-light-markers');
   let defaults = null;
   let state = null;
   let selectedIndex = null;
   let busy = false;
   let baked = null;
   let skyModels = [];
+  function updateMarkers() {
+    onMarkers(markerToggle.checked ? defaults.lights.map((light) => light.origin) : []);
+  }
+  markerToggle.onchange = updateMarkers;
 
   function selected() {
     return state?.lights.find((light) => light.index === selectedIndex) ?? null;
@@ -277,6 +282,8 @@ export function createEnvironmentControls({ onChange = () => {}, onFocus = () =>
         })),
       };
       selectedIndex = state.lights[0]?.index ?? null;
+      markerToggle.disabled = selectedIndex === null;
+      updateMarkers();
       byId('environment-light-list').replaceChildren(
         ...defaults.lights.map(
           (light) => new Option(light.label || `Light ${light.index + 1}`, String(light.index)),

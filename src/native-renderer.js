@@ -175,6 +175,7 @@ export function createNativeRenderer(
     transition: 0,
   };
   let infoOverlay = { enabled: false, dirty: false };
+  let lightMarkers = [];
   let fx = { enabled: false, playing: false, repeat: false, timeMs: 0, restartRevision: 0 };
   let diagnostics = { backend: 'Direct3D9', models: null },
     lastPoll = 0;
@@ -227,6 +228,7 @@ export function createNativeRenderer(
     }
     return {
       infoOverlay: { ...infoOverlay },
+      lightMarkers,
       camera: { ...camera, position: [...camera.position] },
       viewProjection: Array.from(cameraMatrix(camera, width / height)),
       renderSize,
@@ -305,6 +307,10 @@ export function createNativeRenderer(
     },
     setInfoOverlay(value) {
       infoOverlay = { enabled: !!value.enabled, dirty: !!value.dirty };
+      setDirty();
+    },
+    setLightMarkers(origins) {
+      lightMarkers = origins;
       setDirty();
     },
     setCamera(value) {

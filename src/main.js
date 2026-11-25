@@ -24,6 +24,7 @@ const desktop = isTauri();
 let probeSettings = sceneProfile.probeSettings;
 const presets = Object.fromEntries(sceneProfile.fogPresets.map(({ id, settings }) => [id, settings]));
 const environmentControls = createEnvironmentControls({
+  onMarkers: (origins) => renderer?.setLightMarkers(origins),
   onChange: () => {
     updateBakeStatus();
     saveSoon();
