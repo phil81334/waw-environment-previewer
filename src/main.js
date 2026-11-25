@@ -170,10 +170,9 @@ function applyObjectVisibility() {
 function refreshObjectCounts() {
   const objects = sceneObjects();
   const drawCounts = renderer?.getDiagnostics().models?.objectDrawCounts;
-  const models = objects.filter((object) => object.kind !== 'brush');
-  const brushes = objects.filter((object) => object.kind === 'brush');
+  const visible = objects.filter((object) => objectDrawCount(object, drawCounts) > 0).length;
   $('object-counts').textContent = manifest
-    ? `${models.length} model placements · ${brushes.length} brush entities. ${objects.filter((object) => objectDrawCount(object, drawCounts) > 0).length} objects have visible draws.`
+    ? `${visible} placed ${visible === 1 ? 'object' : 'objects'} visible`
     : 'Build a scene to show its placed objects.';
   const canToggle = typeof renderer?.setObjectVisibility === 'function';
   for (const id of ['show-models', 'show-static-models', 'show-script-models', 'show-brushes'])

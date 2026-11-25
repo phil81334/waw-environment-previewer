@@ -20,7 +20,7 @@ The desktop app needs the [WebView2 Evergreen Runtime](https://developer.microso
 | **Worldspawn** | Choose an installed skybox model or edit the sun, ambient light and contrast, then bake. The skybox list is populated from the installation each time the app opens. The last completed scene stays visible while a replacement builds. |
 | **Probes** | Toggle captured reflections immediately. A new bake recaptures them. |
 | **Vision** and **Fog** | Change installed Vision presets, edit their preview values or adjust fog live. Find the corresponding script call under **Details & warnings → Fog request**. |
-| **Entities** and **FX** | Toggle placed models, brush entities and supported initial effects live. Previously baked shadows and reflections stay in the scene until recaptured. |
+| **Entities** and **FX** | Toggle placed models, brush entities and supported initial effects live. The Entities counter shows how many placed objects are visible. Worldspawn brushes and patches, including the room itself, stay visible. Previously baked shadows and reflections stay in the scene until recaptured. |
 
 Right-drag to look. Use WASD to fly, Q/E to move down or up, Shift to move faster and the mouse wheel to move forward or back. **Expand viewport** gives the scene the full app content area. Press Escape to restore the controls.
 
