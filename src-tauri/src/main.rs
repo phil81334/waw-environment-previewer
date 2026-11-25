@@ -8,6 +8,7 @@ pub static NvOptimusEnablement: u32 = 1;
 #[used]
 pub static AmdPowerXpressRequestHighPerformance: u32 = 1;
 
+mod light_view;
 mod scene_cache;
 mod storage;
 mod viewport;
@@ -360,6 +361,26 @@ fn scene_manifest(state: tauri::State<DesktopState>) -> Result<Value, String> {
 }
 
 #[tauri::command]
+fn light_viewpoint(
+    state: tauri::State<DesktopState>,
+    scene_id: String,
+    origin: [f32; 3],
+    reference: [f32; 3],
+) -> Result<[f32; 3], String> {
+    let scene = state
+        .jobs
+        .lock()
+        .map_err(|e| e.to_string())?
+        .scene
+        .clone()
+        .ok_or("Bake a scene before viewing a light.")?;
+    if scene.manifest.id != scene_id {
+        return Err("The selected scene has changed.".into());
+    }
+    light_view::eye(&scene, origin, reference)
+}
+
+#[tauri::command]
 fn list_visions(state: tauri::State<DesktopState>) -> Result<Vec<String>, String> {
     let game = accepted_game(&state)?;
     storage::list_visions(&game.join("raw/vision"))
@@ -652,6 +673,7 @@ fn main() {
             bake_status,
             cancel_bake,
             scene_manifest,
+            light_viewpoint,
             list_visions,
             load_vision,
             save_session,

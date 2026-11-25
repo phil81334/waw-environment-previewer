@@ -29,13 +29,7 @@ const environmentControls = createEnvironmentControls({
     updateBakeStatus();
     saveSoon();
   },
-  onFocus: (light) => {
-    try {
-      focusLight(light);
-    } catch (error) {
-      report(error);
-    }
-  },
+  onFocus: (light) => focusLight(light).catch(report),
 });
 let viewportInfoShown = false;
 function updateBakeStatus() {
@@ -53,12 +47,12 @@ function updateBakeStatus() {
       : 'Bake current';
   renderer?.setInfoOverlay({ enabled: viewportInfoShown, dirty: dirty || !manifest });
 }
-function focusLight(light) {
-  const target = light.target ?? light.origin;
-  const look = light.origin.map((v, i) => v * 0.35 + target[i] * 0.65);
-  const distance = Math.max(96, Math.min(240, (light.radius || 200) * 1.1));
-  const eye = [look[0], look[1] + distance, look[2] + 24];
-  camera.setState(cameraAt(eye, look));
+async function focusLight(light) {
+  if (!manifest) throw new Error('Bake a scene before viewing a light.');
+  const sceneId = manifest.id;
+  const eye = await invoke('light_viewpoint', { sceneId, origin: light.origin, reference: sceneProfile.camera.position });
+  if (manifest?.id !== sceneId || environmentControls.selectedLight()?.index !== light.index) return;
+  camera.setState(cameraAt(eye, light.origin));
   message(`Viewing ${light.label}. Colour / intensity changes require Bake.`, 'success');
 }
 function setViewportExpanded(expanded) {
