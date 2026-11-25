@@ -6,6 +6,16 @@ World at War Environment Previewer is not affiliated with Treyarch, Activision o
 
 ![The Zombies tutorial room under red lighting, with numbered light markers and the Lights panel open](images/preview.png)
 
+**Open a full-size screenshot**
+
+[1 · Green lights](https://raw.githubusercontent.com/phil81334/waw-environment-previewer/main/images/1.png) ·
+[2 · Red lights](https://raw.githubusercontent.com/phil81334/waw-environment-previewer/main/images/2.png) ·
+[3 · Skybox](https://raw.githubusercontent.com/phil81334/waw-environment-previewer/main/images/3.png) ·
+[4 · Blue-lit exterior](https://raw.githubusercontent.com/phil81334/waw-environment-previewer/main/images/4.png) ·
+[5 · Dark fog](https://raw.githubusercontent.com/phil81334/waw-environment-previewer/main/images/5.png) ·
+[6 · Pale fog](https://raw.githubusercontent.com/phil81334/waw-environment-previewer/main/images/6.png) ·
+[7 · Interior fog](https://raw.githubusercontent.com/phil81334/waw-environment-previewer/main/images/7.png)
+
 ## Download and run
 
 1. Install Call of Duty: World at War and its original Modtools in the same game folder. Baking uses the verified Modtools 1.2 versions of `cod2map.exe`, `cod2rad.exe` and `MSVCR71.dll`.
