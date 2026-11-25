@@ -6,8 +6,7 @@ import { join } from "node:path";
 // List build inputs explicitly so local game paths, bake outputs and previous
 // releases stay out of the source download, including when building without Git.
 const publicFiles = [
-  ".gitattributes", ".gitignore", "ATTRIBUTION.md",
-  "FX-THIRD-PARTY-NOTICES.md", "LICENCE", "README.md", "images",
+  ".gitattributes", ".gitignore", "ATTRIBUTION.md", "LICENCE", "README.md", "images",
   "index.html", "package.json", "package-lock.json", "vite.config.js",
   "scripts", "src", "src-tauri/build.rs", "src-tauri/capabilities",
   "src-tauri/Cargo.lock", "src-tauri/Cargo.toml", "src-tauri/icons",

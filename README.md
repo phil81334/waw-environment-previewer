@@ -71,4 +71,4 @@ Building the app on Windows x64 needs the WebView2 runtime and the following too
 
 Place light entities and their aim targets in Radiant. The previewer builds the light list from the selected MAP and uses its worldspawn properties. A new scene gets its own saved settings. Keep the layout sealed for the stock compilers, use supported installed materials and models, and test one full **Bake & capture**. The fixed-scene renderer currently supports one reflection probe and up to one initial FX placement.
 
-Application code is GPL-3.0-only. The bundled community MAP is credited separately. [Licence](LICENCE) · [Credits](ATTRIBUTION.md) · [FX third-party notices](FX-THIRD-PARTY-NOTICES.md)
+Application code is GPL-3.0-only. The bundled community MAP is credited separately. [Licence](LICENCE) · [Credits and third-party notices](ATTRIBUTION.md)
