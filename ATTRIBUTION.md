@@ -1,6 +1,6 @@
 # Attribution
 
-Created by **phil81334**. This unofficial community app is independent of Treyarch, Activision and UGX.
+Created by **phil81334**.
 
 - The bundled MAP comes from **Sniperbolt’s Nazi_Zombie_Tutorial Mapping Tutorial v2.0**. Its README credits Sniperbolt for the tutorial and Sparks for the scripts that informed the initial mystery-box effect. The MAP retains its original authorship. The application's GPL applies to the previewer code.
 - The application code is licensed under [GPL-3.0-only](LICENCE).

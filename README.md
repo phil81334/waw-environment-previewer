@@ -1,6 +1,8 @@
 # World at War Environment Previewer
 
-An unofficial Windows app by **phil81334** for trying lights, skies, Vision presets and fog in Sniperbolt’s Zombies tutorial scene. Preview the result in Direct3D 9, then take the settings back to your own map or scripts. World at War and its Modtools supply the shaders, models, textures and original compilers. [Scene credits](scenes/tutorial/CREDITS.md)
+Try lights, skies, Vision presets and fog in Sniperbolt’s Zombies tutorial scene, then take the settings back to your own map or scripts. Made by [phil81334](https://github.com/phil81334). Built with JavaScript, Rust, Vite and Tauri, with a Direct3D 9 viewport.
+
+World at War Environment Previewer is not affiliated with Treyarch, Activision or any modding community.
 
 ![The tutorial scene rendered in the previewer](images/preview.png)
 
@@ -10,7 +12,7 @@ An unofficial Windows app by **phil81334** for trying lights, skies, Vision pres
 2. Under **Assets** on the latest release, download **`waw-environment-previewer.exe`**. The source ZIP is for building the app yourself. [GitHub Releases](https://github.com/phil81334/waw-environment-previewer/releases/latest)
 3. Put the downloaded EXE beside **`CoDWaW.exe`** and double-click it. The tutorial map is inside the EXE. The first launch compiles the scene in AppData and captures reflections. Later launches can reuse a matching bake and recapture reflections.
 
-The desktop app needs the [WebView2 Evergreen Runtime](https://developer.microsoft.com/microsoft-edge/webview2/#download-section) and a hardware Direct3D 9 adapter with Shader Model 3 and the render-target formats used by the scene. It tries capable adapters in order of dedicated video memory and can use integrated graphics.
+Running the EXE requires no development tools. Windows needs the [WebView2 Evergreen Runtime](https://developer.microsoft.com/microsoft-edge/webview2/#download-section) and a hardware Direct3D 9 adapter with Shader Model 3 and the render-target formats used by the scene. The app tries capable adapters in order of dedicated video memory and can use integrated graphics.
 
 ## Working in the scene
 
@@ -52,7 +54,9 @@ Building the app on Windows x64 needs the WebView2 runtime and the following too
 | `npm run dev` | Open the desktop app with the development game path. |
 | `npm run dev:web` | Open a local frontend server. Scene loading and Direct3D rendering require the desktop app. |
 | `npm run build:web` | Build the frontend into `dist/`. |
-| `npm run build` | Build the production EXE under `release/` and package the matching source ZIP and SHA-256 checksums under `release/vX.Y.Z/`. Packaging uses the Windows `tar.exe` utility. |
+| `npm run build` | Build `release/vX.Y.Z/waw-environment-previewer.exe` for the version in `package.json`. Copy it beside `CoDWaW.exe` to run it. |
+
+If that version already has an archived EXE and release record on your machine, the build prints the path to the freshly compiled EXE in Cargo’s target directory.
 
 ## Project layout
 
