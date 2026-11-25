@@ -4,7 +4,7 @@ Try lights, skies, Vision presets and fog in Sniperbolt’s Zombies tutorial sce
 
 World at War Environment Previewer is not affiliated with Treyarch, Activision or any modding community.
 
-![The tutorial scene rendered in the previewer](images/preview.png)
+![The Zombies tutorial room under red lighting, with numbered light markers and the Lights panel open](images/preview.png)
 
 ## Download and run
 
