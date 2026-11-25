@@ -14,7 +14,7 @@ pub fn inspect_entities(game: &Path) -> Result<serde_json::Value, String> {
     assets::verify_tools(game)?;
     let world = worldspawn::defaults()?;
     let mut reader = AssetReader::new_entities(game)?;
-    let skies = worldspawn::sky_models(&mut reader, &world);
+    let skies = reader.installed_sky_models()?;
     let (corrections, warnings) = probes::corrections(&mut reader)?;
     let probes = probes::defaults()?;
     Ok(serde_json::json!({

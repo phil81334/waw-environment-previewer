@@ -1,8 +1,5 @@
 //! Editable worldspawn properties for the embedded scene.
-use crate::{
-    assets::{self, AssetReader},
-    bake, scene_profile,
-};
+use crate::{assets, bake, scene_profile};
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
@@ -131,25 +128,6 @@ pub(crate) fn defaults() -> Result<WorldspawnSettings, String> {
         scene: profile.id.clone(),
         properties,
     })
-}
-
-pub(crate) fn sky_models(reader: &mut AssetReader, world: &WorldspawnSettings) -> Vec<String> {
-    let mut names = Vec::new();
-    // These families have a verified shader path. Also offer the scene author's
-    // own sky if installed; the renderer validates its materials when baking.
-    for name in std::iter::once(world.get("skyboxmodel").unwrap_or("")).chain([
-        "skybox_pel1",
-        "skybox_zombie",
-        "skybox_fly",
-    ]) {
-        if !name.is_empty()
-            && !names.iter().any(|n| n == name)
-            && reader.read(&format!("xmodel/{name}")).is_ok()
-        {
-            names.push(name.to_owned());
-        }
-    }
-    names
 }
 
 fn header(settings: &WorldspawnSettings) -> String {

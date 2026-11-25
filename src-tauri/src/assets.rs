@@ -1,6 +1,6 @@
 use crate::{Material, Texture, TextureBinding, TextureMip};
 use sha2::{Digest, Sha256};
-use std::collections::HashMap;
+use std::collections::{BTreeSet, HashMap};
 use std::fs::{self, File};
 use std::io::Read;
 use std::path::{Path, PathBuf};
@@ -154,6 +154,46 @@ impl AssetReader {
             cache: HashMap::new(),
             iwd_first,
         })
+    }
+
+    pub(crate) fn installed_sky_models(&self) -> Result<Vec<String>, String> {
+        let mut models = BTreeSet::new();
+        let is_sky = |model: &str| {
+            model
+                .get(.."skybox_".len())
+                .is_some_and(|prefix| prefix.eq_ignore_ascii_case("skybox_"))
+                && !model.contains('.')
+                && name(model).is_ok()
+        };
+        // Model names are extensionless. Only their names are needed for the picker;
+        // the selected model's geometry and materials are loaded during the bake.
+        for path in self.index.keys() {
+            if let Some(model) = path.strip_prefix("xmodel/").filter(|model| is_sky(model)) {
+                models.insert(model.to_owned());
+            }
+        }
+        match fs::read_dir(self.game.join("raw/xmodel")) {
+            Ok(entries) => {
+                for entry in entries {
+                    let entry = entry.map_err(|error| error.to_string())?;
+                    let filename = entry.file_name();
+                    let Some(model) = filename.to_str() else {
+                        continue;
+                    };
+                    if is_sky(model)
+                        && entry
+                            .file_type()
+                            .map_err(|error| error.to_string())?
+                            .is_file()
+                    {
+                        models.insert(model.to_ascii_lowercase());
+                    }
+                }
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+            Err(error) => return Err(format!("Cannot list raw/xmodel: {error}")),
+        }
+        Ok(models.into_iter().collect())
     }
 
     pub(crate) fn read(&mut self, relative: &str) -> Result<Vec<u8>, String> {

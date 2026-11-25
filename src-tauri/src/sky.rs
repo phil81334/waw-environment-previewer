@@ -369,17 +369,24 @@ mod tests {
         }
         assert!(load(&mut reader, "../bad", &mut HashMap::new()).is_err());
         let directory = std::path::Path::new(&root).join("raw/xmodel");
-        let mut supported = 0;
+        let discovered = reader.installed_sky_models().unwrap();
         for entry in std::fs::read_dir(directory).unwrap().filter_map(Result::ok) {
             let model = entry.file_name().to_string_lossy().into_owned();
             if !model.starts_with("skybox_") || !entry.path().is_file() {
                 continue;
             }
-            match load(&mut reader, &model, &mut HashMap::new()) {
-                Ok(_) => supported += 1,
-                Err(error) => panic!("Installed sky {model}: {error}"),
-            }
+            assert!(
+                discovered.contains(&model),
+                "Skybox missing from picker: {model}"
+            );
         }
-        println!("Installed named sky reader accepted {supported} external models.");
+        for model in &discovered {
+            load(&mut reader, model, &mut HashMap::new())
+                .unwrap_or_else(|error| panic!("Installed sky {model}: {error}"));
+        }
+        println!(
+            "Loaded all {} installed skybox models in the picker.",
+            discovered.len()
+        );
     }
 }

@@ -264,9 +264,10 @@ export function createEnvironmentControls({ onChange = () => {}, onFocus = () =>
       defaults = clone(metadata.environmentDefaults);
       if (!defaults?.worldspawn || !Array.isArray(defaults.lights))
         throw new Error('Installed scene environment defaults are unavailable.');
-      skyModels = [...new Set(metadata.skyModels || [])];
+      const installedSkies = new Map((metadata.skyModels || []).map((name) => [name.toLowerCase(), name]));
       const authoredSky = defaults.worldspawn.properties.find((pair) => pair[0] === 'skyboxmodel')?.[1];
-      if (authoredSky && !skyModels.includes(authoredSky)) skyModels.push(authoredSky);
+      if (authoredSky) installedSkies.set(authoredSky.toLowerCase(), authoredSky);
+      skyModels = [...installedSkies.values()].sort((a, b) => a.localeCompare(b));
       state = {
         worldspawn: clone(defaults.worldspawn),
         lights: defaults.lights.map(({ index, color, intensity }) => ({
