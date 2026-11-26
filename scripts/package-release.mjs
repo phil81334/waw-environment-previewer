@@ -19,7 +19,11 @@ export function packageRelease(root, targetDir) {
   const executable = `${name}.exe`;
   const builtExecutable = join(targetDir, "release", executable);
   if (existsSync(join(versionDir, "release-info.md")) && existsSync(join(versionDir, executable))) {
-    console.log(`Release v${version} is already archived. Your new build is at ${builtExecutable}`);
+    const rebuildDir = versionDir + "-rebuild";
+    const rebuiltExecutable = join(rebuildDir, executable);
+    mkdirSync(rebuildDir, { recursive: true });
+    copyFileSync(builtExecutable, rebuiltExecutable);
+    console.log(`Ready: ${rebuiltExecutable}`);
     return;
   }
 

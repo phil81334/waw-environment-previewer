@@ -66,7 +66,7 @@ Building the app on Windows x64 needs the WebView2 runtime and the following too
 | `npm run build:web` | Build the frontend into `dist/`. |
 | `npm run build` | Build `release/vX.Y.Z/waw-environment-previewer.exe` for the version in `package.json`. Copy it beside `CoDWaW.exe` to run it. |
 
-If that version already has an archived EXE and release record on your machine, the build prints the path to the freshly compiled EXE in Cargo’s target directory.
+Rebuilding an archived version writes the new EXE to `release/vX.Y.Z-rebuild/waw-environment-previewer.exe`.
 
 ## Project layout
 
